@@ -103,7 +103,7 @@ function PagUsrsList({Ttems, Ttag, rer, setRer}) {
     const {userName, userId, userEmail, isuserBlocked, userRole, userRep, token} = useGlobalContext()
     const itemsPerPage = 20
     const tag = Ttag
-    const [items, setItems] = useState([])
+    const [items, setItems] = useState(Ttems)
     const [prevtag, setPrevtag] = useState(0)
 
     const [initialpage, setInitialpage] = useState(0)

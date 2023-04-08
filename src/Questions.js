@@ -20,7 +20,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import PagQsList from './PagQsList';
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import 'font-awesome/css/font-awesome.min.css';
 
 import {useEffect, useState, Fragment} from 'react'
@@ -48,6 +48,8 @@ function Questions() {
     const [src, setSrc] = useState('')
     const [odrby, setOdrby] = useState('date')
     const [formats, setFormats] = useState(() => []);
+    const location = useLocation()
+    console.log(location, location?.pathname)
     
     const [rer, setRer] = useState(0)
     const resetRer = () =>{

@@ -125,7 +125,8 @@ function Login() {
             })
             .catch((err) => {
                 //console.log(err)
-                localStorage.setItem('token', null)
+                localStorage.setItem("token", null)
+                localStorage.setItem("email", null)
                 resetToken(null)
                 resetUserName(null)
                 resetUserId(null)
@@ -170,6 +171,7 @@ function Login() {
                 setOpenlnrprogbar(false)
                 console.log(res,"THEn", location?.pathname)
                 localStorage.setItem("token", res.data.token)
+                localStorage.setItem("email", res.data.email)
                 resetToken(res.data.token)
                 resetUserName(res.data.username)
                 resetUserId(res.data.id)
@@ -186,6 +188,7 @@ function Login() {
                 }
                 //alert("Invalid Credentials")
                 localStorage.setItem("token", null)
+                localStorage.setItem("email", null)
             })
 
         } catch (Error) {

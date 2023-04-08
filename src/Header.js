@@ -1,9 +1,12 @@
 import { Link, Navigate } from 'react-router-dom';
 
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import {useGlobalContext} from './Context'
+
+import Badge from '@mui/material/Badge';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 function Loginbtn({innertxt, route, st}) {
     const navigate = useNavigate()
@@ -26,6 +29,7 @@ function Logoutbtn() {
     return (
         <button className='slbtn loginbtn' onClick={() => {
             localStorage.setItem("token", null)
+            localStorage.setItem("email", null)
             resetToken(null)
             resetUserName(null)
             resetUserId(null)
@@ -46,6 +50,25 @@ function Userbtn() {
         }}>
             Profile
         </button>
+    );
+}
+
+function Nbadge() {
+    const { userId, userName, userEmail, socket, nn } = useGlobalContext()
+    // const nn = useRef(0)
+    console.log('Nbadge rend', nn.current)
+    // useEffect(()=>{
+    //     socket.on('not', (data) => {
+    //         nn.current += 1
+    //         console.log('ping')
+    //     })
+    // }, [socket])
+    return(
+        <Link onClick={(e) => window.scrollTo({top:0,behavior:'smooth'})} to='/notifications' className='questionlink' style={{right:'500px'}}>
+            <Badge color="secondary" badgeContent={nn}>
+                <NotificationsIcon />
+            </Badge>
+        </Link>
     );
 }
 
@@ -77,6 +100,7 @@ function Header(props) {
                 <>
                     <Userbtn />
                     <Logoutbtn />
+                    <Nbadge />
                 </>
                 ):(
                     <>

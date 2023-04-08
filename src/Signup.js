@@ -69,6 +69,7 @@ function Signup() {
                 alert("Email Already Exists")
             } else {
                 localStorage.setItem("token", res.data.token)
+                localStorage.setItem("email", res.data.email)
                 resetToken(res.data.token)
                 resetUserName(res.data.username)
                 resetUserId(res.data.insertId)
@@ -80,6 +81,7 @@ function Signup() {
             console.log(err)
             handleSnackopen(err.response.data)
             localStorage.setItem("token", null)
+            localStorage.setItem("email", null)
             //alert("Unknown Error Occured")
         })
     }

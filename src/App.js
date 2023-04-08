@@ -7,8 +7,9 @@ import Ask from './Ask.js';
 import Singleqs from './Singleqs.js';
 import Login from './Login.js';
 import Signup from './Signup.js';
-import User from './User';
-import Users from './Users'
+import User from './User.js';
+import Users from './Users.js'
+import Notifications from './Notifications.js'
 
 // Test
 
@@ -31,6 +32,7 @@ function App() {
                 <Route path='questions' element={<Questions />} />
                 <Route path='ask' element={<Ask />} />
                 <Route path='users' element={<Users />} />
+                <Route path='notifications' element={<Notifications />}/>
                 <Route path='user/:userId' element={<User />} />
                 <Route path='questions/:questionId' element={<Singleqs />}></Route>
                 <Route path='*' element={<NOT_FOUND />}></Route>

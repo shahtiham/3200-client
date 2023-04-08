@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from "react"
+import React, {useState, useContext, useEffect, useRef} from "react"
 import Axios from 'axios'
 import io from "socket.io-client";
 
@@ -12,15 +12,49 @@ const AppProvider = ({children}) => {
 
     // check login stuff,{user:{"user_id":`${userId}`}}
     //"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVhQGdtYWlsLmNvbSIsImlhdCI6MTY1Njg1NjQ3NCwiZXhwIjoxNjU2OTQyODc0fQ.c3ck7VHtgFVtwHDhPFWb3FluElMuUpobW9Prgz4enco"
-    const [token, setToken] = useState(localStorage.getItem('token'))
+    const [token, setToken] = useState(localStorage.getItem("token"))
     const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
     const [userName, setUserName] = useState(null)
     const [userId, setUserId] = useState(null)
-    const [userEmail, setEmail] = useState(null)
+    const [userEmail, setEmail] = useState(localStorage.getItem("email"))
     const [isuserBlocked, setIsuserblocked] = useState(null)
     const [userCreated, setUsercreated] = useState(null)
     const [userRole, setUserrole] = useState(null)
     const [userRep, setUserrep] = useState(null)
+    
+    const [nn, setNn] = useState(0)
+    const resetnn = (val) => {
+        setNn(val)
+    }
+
+    const hn = useRef(0)
+    const getnncnt = () => {
+        if(token !== null && token !== undefined && userEmail !== null && userEmail !== undefined){
+            Axios.get("http://localhost:8089/getnncnt/" + userEmail, {headers:{"authorization": `${token}`}})
+            .then((res) => {
+                console.log(res)
+                if(res.data.nn > 0){
+                    hn.current = res.data.nn
+                    setNn(hn.current)
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                hn.current = 0
+                setNn(hn.current)
+            })
+        }
+    }
+    useEffect(() => {
+        console.log('con', token, userEmail)
+        getnncnt()
+    }, [token])
+    useEffect(() => {
+        socket.on('not', (data) => {
+            getnncnt()
+            console.log('ping', nn, hn.current, data)
+        })
+    }, [socket])
 
     const [headerrendered, setHeaderrendered] = useState(false)
     const resetheaderren = (val) => {
@@ -67,7 +101,8 @@ const AppProvider = ({children}) => {
         })
         .catch((err) => {
             //console.log(err)
-            localStorage.setItem('token', null)
+            localStorage.setItem("token", null)
+            localStorage.setItem("email", null)
             setToken(null)
             setUserId(null)
             setUserName(null)
@@ -137,6 +172,9 @@ const AppProvider = ({children}) => {
         userRole,
         userRep,
         headerrendered,
+        nn,
+        hn,
+        resetnn,
         resetheaderren,
         resetAskingB,
         resetAskingT,

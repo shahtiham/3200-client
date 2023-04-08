@@ -30,7 +30,10 @@ function MarkDown({text}){
                     //Rsh,
                     code({ node, inline, className, children, ...props }) {
                         const match = /language-(\w+)/.exec(className || '');
-                        //console.log('in :',inline,'cl :', className,'m :', match, children)
+                        // console.log('in :',inline,'cl :', className,'m :', match, children[0])
+                        const mClr = children.length === 1 && children[0].length === 7? children[0][0] === '#'? (children[0][1] >=0 && children[0][1] <= 9)||(children[0][1] >= 'a' && children[0][1] <= 'f')? (children[0][2] >=0 && children[0][2] <= 9)||(children[0][2] >= 'a' && children[0][2] <= 'f')? (children[0][3] >=0 && children[0][3] <= 9)||(children[0][3] >= 'a' && children[0][3] <= 'f')? (children[0][3] >=0 && children[0][3] <= 9)||(children[0][3] >= 'a' && children[0][3] <= 'f')? (children[0][4] >=0 && children[0][4] <= 9)||(children[0][4] >= 'a' && children[0][4] <= 'f')? (children[0][5] >=0 && children[0][5] <= 9)||(children[0][5] >= 'a' && children[0][5] <= 'f')? (children[0][6] >=0 && children[0][6] <= 9)||(children[0][6] >= 'a' && children[0][6] <= 'f')? true : false  : false  : false  : false  : false  : false  : false : false : false
+                        // console.log(mClr)
+                        const clr = children[0]
                         return !inline && match ? (
                           <SyntaxHighlighter
                             style={coyWithoutShadows}
@@ -40,11 +43,22 @@ function MarkDown({text}){
                           >
                             {String(children).replace(/\n$/, '')}
                           </SyntaxHighlighter>
-                        ) : ((inline && !match) ? (
+                        ) : ((inline && !match) ?( (mClr)? (
+                          <div style={{display:'inline-flex', overflow:'auto', position:'relative'}}>
+                            <code style={{backgroundColor:"rgb(227, 230, 232)",borderRadius:'3px', borderTopRightRadius:'0px', borderBottomRightRadius:'0px' ,position:"relative",display:"inline", padding:'2px 4px 2px 4px',width:'auto',height:'auto'}}>
+                                <>
+                                  {children}
+                                </>
+                            </code>
+                            <div style={{overflow:'auto',display:'inline-flex', position:"relative", width:'14px',height:'28px', backgroundColor:"rgb(227, 230, 232)", borderTopRightRadius:'3px', borderBottomRightRadius:'3px', alignItems:'center', justifyContent:'center'}} >
+                              <div style={{overflow:'auto', height:'10px', width:'10px', borderRadius:'100%', backgroundColor:clr, position:'absolute', display:'flex'}} ></div>
+                            </div>
+                          </div>
+                        ) : (
                             <code style={{backgroundColor:"rgb(227, 230, 232)",borderRadius:'3px',position:"relative",display:"inline", padding:'2px 4px 2px 4px',width:'auto',height:'auto'}}>
                                 {children}
                             </code>
-                        ) : (
+                        ) ): (
                           <code style={{backgroundColor:"rgb(246, 246, 246)",position:"relative",display:"block",width:"100%",padding:'5px',minHeight:"18.4px",
                           overflowX:'auto',overflowY:'auto',overflowWrap:'normal',maxHeight:'600px',borderRadius:'3px'}} className={className} {...props}>
                             {children}
@@ -73,11 +87,15 @@ function MarkDown({text}){
                       )
                     },
                     a: ({node, children, ...props}) => {
-                      //console.log(node, children)
+                      // console.log(node, children, node.properties.href.slice(0,17))
                         return node.properties.href === 'https://#'?(
                           <a href='#' style={{pointerEvents:'none', backgroundColor:'hsl(205,46%,92%)', textDecoration:'none', 
                               color:'hsl(205,47%,42%)', paddingLeft:'6px', paddingRight:'6px', paddingBottom:'2px', borderRadius:'4px',fontSize:'12px'}}
                           >{children}</a>
+                        ):( (node.properties.href.length >= 16) && (node.properties.href.slice(0, 17) === "#user-content-fn-") )?(
+                          <a style={{position:'relative'}} href={node.properties.href} id={'user-content-fnref-' + node.properties.href.slice(17)} >
+                            {children}
+                          </a>
                         ):(
                             <a href={node.properties.href}>{children}</a>
                         );
