@@ -97,6 +97,7 @@ function PagAsList({qid}) {
     //console.log('it ', items,'ai ', aid,ival,prevtag, inputElement)
     // console.log('33', inputElement.current,inputElement,aid, rer)
     useEffect(()=>{
+        console.log(inputElement, inputElement.current, aid)
         if(inputElement.current !== null && inputElement.current != undefined) {
             inputElement.current.scrollIntoView({
                 behavior: "smooth",
@@ -120,7 +121,8 @@ function PagAsList({qid}) {
     const [itemOffset, setItemOffset] = useState(0);
     
 
-    //console.log("pag rend", pageCount, itemOffset, "initpage: ", initialpage, items, currentItems)
+    // console.log("pag rend", pageCount, itemOffset, "initpage: ", initialpage, items, currentItems)
+    console.log(aid, inputElement.current)
 
     useEffect(() => {
         const pc =(items === undefined || items === null || items.length === 0)? 0 : Math.ceil(items.length / itemsPerPage)
@@ -368,7 +370,7 @@ function PagAsList({qid}) {
                         {
                             currentItems?.map((as) => {//console.log(isbountyrunning)
                                 let d = new Date(as.date)
-                                //console.log( as.a_id, aid, rer)
+                                console.log( as.a_id, aid, rer, inputElement)
                                 if((aid !== null && aid !== undefined && 
                                     currentItems?.length !== 0 && aid.toString() === (as.a_id).toString()) && rer === -1){
                                         setRer(rer + 1)

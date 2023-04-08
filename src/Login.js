@@ -116,7 +116,7 @@ function Login() {
             /* https://tiham.herokuapp.com/ */
             Axios.get("http://localhost:8089/isloggedin", {headers:{"authorization": `${token}`}})
             .then((res) => {
-                //console.log(res)
+                console.log(res)
                 if(res.data.isloggedin === 'loggedin'){
                     reject()
                 } else {
@@ -124,7 +124,7 @@ function Login() {
                 }
             })
             .catch((err) => {
-                //console.log(err)
+                console.log(err)
                 localStorage.setItem("token", null)
                 localStorage.setItem("email", null)
                 resetToken(null)
@@ -169,7 +169,7 @@ function Login() {
                 ctoken:ctoken
             }).then((res) => {
                 setOpenlnrprogbar(false)
-                console.log(res,"THEn", location?.pathname)
+                console.log(res,"THEn", location?.pathname, res.data.token, res.data.email, )
                 localStorage.setItem("token", res.data.token)
                 localStorage.setItem("email", res.data.email)
                 resetToken(res.data.token)

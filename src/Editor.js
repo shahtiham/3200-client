@@ -17,6 +17,7 @@ import { useQpgContext } from './Singleqs';
 import MarkDown from './MarkDown';
 
 function  Editor(){
+    const navigate = useNavigate()
     const [opensnack, setOpensnack] = useState(false);
     const [snackmsg, setSnackmsg] = useState('')
     const [openlnrprogbar, setOpenlnrprogbar] = useState(false)
@@ -72,6 +73,7 @@ function  Editor(){
             }).then((res) => {
                 console.log(res)
                 resetLoadAns((loadAns === true)?false:true)
+                // navigate(`/questions/${questionId}?aid=${res.data.insertId}`)
                 resetAid(res.data.insertId)
                 resetBody('')
                 resetEdA({})

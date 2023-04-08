@@ -83,7 +83,8 @@ function Singleqs() {
     const [loadq, setLoadq] = useState(false)
     const [aid, setAid] = useState(searchParams.get('aid'))
 
-    let inputElement = useRef();
+    let inputElement = useRef(null);
+    console.log(inputElement, inputElement.current)
 
     const [openmodal, setOpenmodal] = useState(false);
     const [valuefromrepfield, setValuefromrepfield] = useState(null)
@@ -156,6 +157,18 @@ function Singleqs() {
         })
     },[loadq])
 
+    const relFn = () => {
+        Axios.get(`http://localhost:8089/questions/tagged/${questionId}/date`).then((res) => {
+            // setTq(res.data[0])
+            setIsbountyawarded(res.data[0].bountyawarded > 0)
+            setIsbountyrunning(res.data[0].isbountyrunning)
+            setbountycreated(res.data[0].bountycreated)
+            setIsprotected(res.data[0].isprotected)
+            setHasacceptedans(res.data[0].acceptedanswer !== null)
+            resetLoadAns(loadAns === true?false:true)
+            //console.log(res.data[0]) // * getting specific question
+        })
+    }
     useEffect(() => {
         // socket.on("from_cron", (data) => {
         //     console.log('calling')
@@ -172,16 +185,10 @@ function Singleqs() {
         // })
         socket.on("failed_to_aw_b", (data) => {
             console.log(data)
-                Axios.get(`http://localhost:8089/questions/tagged/${questionId}/date`).then((res) => {
-                // setTq(res.data[0])
-                setIsbountyawarded(res.data[0].bountyawarded > 0)
-                setIsbountyrunning(res.data[0].isbountyrunning)
-                setbountycreated(res.data[0].bountycreated)
-                setIsprotected(res.data[0].isprotected)
-                setHasacceptedans(res.data[0].acceptedanswer !== null)
-                resetLoadAns(loadAns === true?false:true)
-                //console.log(res.data[0]) // * getting specific question
-            })
+            relFn()
+        })
+        socket.on("not", (data) => {
+            relFn()
         })
     },[socket])
 

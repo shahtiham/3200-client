@@ -40,7 +40,7 @@ function Users() {
         setIsmod(val);
     };
 
-    useEffect(() => {
+    const gusr = () => {
         let mod = ""
         if(ismod === null){
             mod = "?mod=n"
@@ -52,11 +52,23 @@ function Users() {
             sort = "&sort="+repordate
         }
         Axios.get('http://localhost:8089/userslist' + mod + sort).then((res) => {
-            //console.log(res)
-            setItems(res.data)
+            // console.log(res)
+            setItems((su === '')?res.data:fltr(res))
         }).catch((err) => {
             //console.log(err)
         })
+    }
+
+    function fltr(res){
+        let dt = []
+        res.data.forEach((ai) => {
+            if(ai.username === su)dt.push(ai)
+        })
+        return dt
+    }
+
+    useEffect(() => {
+        gusr()
     },[ismod, rer, repordate])
     useEffect(() => {
         socket.on("mod_dem_to_usr", (data) => {
@@ -64,10 +76,26 @@ function Users() {
         })
     }, [socket])
 
+    const [su, setSu] = useState('')
+    const resetSu = (v) => setSu(v)
+    const hsu = (e) => {
+        gusr()
+    }
+
     return(
         <div style={{display:'block', postion:'relative'}} className='sec2q'>
             <h3 style={{marginLeft:'30px', fontWeight:'450'}} >User List</h3>
-            <div className='sortsec' style={{marginTop:'70px'}}>
+
+            <div className="wrap" style={{paddingTop:'10px'}}>
+                    <div className="search">
+                        <input  value={su} type="text" className="searchTerm" placeholder="Search..." onChange={(e) => {resetSu(e.target.value)}}/>
+                        <button type="submit" className="searchButton" onClick={(e)=>{hsu(e)}}>
+                            <i className="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+            <div className='sortsec' style={{marginTop:'90px'}}>
                 <ToggleButtons  ismod={ismod} handleIsmod={handleIsmod} />
             </div>
             <div style={{width:'250px', marginLeft:'10px', position:'relative',marginTop:'10px'}} >
@@ -292,7 +320,7 @@ function PagUsrsList({Ttems, Ttag, rer, setRer}) {
             />
             {
                 currentItems?.map((qs, index) => {
-                    console.log(qs)
+                    // console.log(qs)
                     return (
                         <>
                             <div style={{postion:'relative', display:'flex',minHeight:'80px', boxShadow: '0 1px 2px rgba(0,0,0,0.15),0 0px 2px rgba(0,0,0,0.1)'}} >
@@ -310,17 +338,17 @@ function PagUsrsList({Ttems, Ttag, rer, setRer}) {
                                         userRole === 'MODERATOR' || userRole === 'ADMIN'?(
                                         <>
                                             {
-                                                qs.role !== 'MODERATOR'?(
+                                                qs.role !== 'MODERATOR' && userRole === 'ADMIN'?(
                                                     <Button style={{position:'relative', height:'25px', right:'2%', top:'10px'}} variant="contained" color="success" size='small'
                                                     onClick={(e) => {handleprotomod(qs)}} >
                                                         Promote to moderator
                                                     </Button>
-                                                ):(
+                                                ):(userRole === 'ADMIN')?(
                                                     <Button style={{position:'relative', height:'25px', right:'2%', top:'10px'}} variant="contained" color="error" size='small'
                                                     onClick={(e) => {handledetousr(qs)}} >
                                                         Demote to user
                                                     </Button>
-                                                )
+                                                ):(<></>)
                                             }
                                             
                                             {

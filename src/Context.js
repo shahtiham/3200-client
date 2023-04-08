@@ -12,11 +12,11 @@ const AppProvider = ({children}) => {
 
     // check login stuff,{user:{"user_id":`${userId}`}}
     //"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVhQGdtYWlsLmNvbSIsImlhdCI6MTY1Njg1NjQ3NCwiZXhwIjoxNjU2OTQyODc0fQ.c3ck7VHtgFVtwHDhPFWb3FluElMuUpobW9Prgz4enco"
-    const [token, setToken] = useState(localStorage.getItem("token"))
+    const [token, setToken] = useState(localStorage.getItem("token") === 'null'? null : localStorage.getItem("token"))
     const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
     const [userName, setUserName] = useState(null)
     const [userId, setUserId] = useState(null)
-    const [userEmail, setEmail] = useState(localStorage.getItem("email"))
+    const [userEmail, setEmail] = useState(localStorage.getItem("email") === 'null'? null : localStorage.getItem("email"))
     const [isuserBlocked, setIsuserblocked] = useState(null)
     const [userCreated, setUsercreated] = useState(null)
     const [userRole, setUserrole] = useState(null)
@@ -28,13 +28,25 @@ const AppProvider = ({children}) => {
     }
 
     const hn = useRef(0)
-    const getnncnt = () => {
-        if(token !== null && token !== undefined && userEmail !== null && userEmail !== undefined){
-            Axios.get("http://localhost:8089/getnncnt/" + userEmail, {headers:{"authorization": `${token}`}})
+    const rtoken = useRef(null)
+    const ruserEmail = useRef(null)
+    useEffect(() => {
+        rtoken.current = token
+        ruserEmail.current = userEmail
+    }, [token, userEmail])
+
+    // console.log(token, userEmail, typeof(userEmail))
+    const getnncnt = (p) => {
+        // console.log(p, userEmail, ruserEmail.current, token)
+        if(rtoken.current !== null && rtoken.current !== undefined && ruserEmail.current !== null && ruserEmail.current !== undefined){
+            Axios.get("http://localhost:8089/getnncnt/" + ruserEmail.current, {headers:{"authorization": `${rtoken.current}`}})
             .then((res) => {
                 console.log(res)
                 if(res.data.nn > 0){
                     hn.current = res.data.nn
+                    setNn(hn.current)
+                } else {
+                    hn.current = 0
                     setNn(hn.current)
                 }
             })
@@ -46,13 +58,14 @@ const AppProvider = ({children}) => {
         }
     }
     useEffect(() => {
-        console.log('con', token, userEmail)
-        getnncnt()
+        // console.log('con', token, userEmail, rtoken.current, ruserEmail.current)
+        getnncnt('b')
     }, [token])
     useEffect(() => {
+        // console.log(userEmail, ruserEmail)
         socket.on('not', (data) => {
-            getnncnt()
-            console.log('ping', nn, hn.current, data)
+            getnncnt('a')
+            // console.log('ping', userEmail, token, nn, hn.current, data,rtoken.current, ruserEmail.current)
         })
     }, [socket])
 

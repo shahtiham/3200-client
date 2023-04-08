@@ -8,7 +8,8 @@ function SharedLayout() {
             <Header />
             <Outlet />
             <footer className="App-footer">
-                coding-queries &copy; 2022
+                <h4 style={{fontWeight:'400'}}>coding-queries &copy; 2023</h4>
+                <Link onClick={(e) => window.scrollTo({top:0,behavior:'smooth'})} to='/faq' style={{textDecoration:'none'}}>FAQ</Link>
             </footer>
         </>
     );

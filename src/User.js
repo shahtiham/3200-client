@@ -18,7 +18,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
 function User() {
-    const {userName, userEmail, isuserBlocked, userRole, userRep, token} = useGlobalContext()
+    const {userName, userEmail, isuserBlocked, userRole, userRep, token, ckifloggedin} = useGlobalContext()
     //Axios.defaults.withCredentials = true
     const { userId } = useParams() // * user id from url parameter
     const [usrName, setUserName] = useState('')
@@ -40,6 +40,9 @@ function User() {
         console.log(val)
         setIsmod(val);
     };
+    useEffect(() => {
+        ckifloggedin(0)
+    },[])
 
     useEffect(() => {
         if(ismod){

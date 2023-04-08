@@ -28,12 +28,12 @@ function Notifications() {
     const {userName, userId, userEmail, isuserBlocked, userRole, userRep, socket, hn, resetnn, token} = useGlobalContext()
     const location = useLocation()
     // console.log(location?.pathname, location)
-    //console.log(userName)
+    console.log(userName, userEmail)
 
     const [tag, setTag] = useState('questions')
     const [odrby, setOdrby] = useState('date')
     const [rer, setRer] = useState(0)
-    const [items, setItems] = useState([1,2,3,4,5])
+    const [items, setItems] = useState([])
     //console.log(items)
 
     const setnncnt2z = () => {
@@ -53,6 +53,7 @@ function Notifications() {
         Axios.get("http://localhost:8089/getnotifics/" + userEmail, {headers:{"authorization": `${token}`}})
         .then((res) => {
             console.log(res)
+            setItems(res.data.mynotifics)
         })
         .catch((err) => {console.log(err)})
     }
@@ -195,8 +196,65 @@ function PagNotsList({Ttems}) {
                     // console.log(qs)
                     return (
                         <>
-                            <div style={{postion:'relative', display:'flex',minHeight:'80px', boxShadow: '0 1px 2px rgba(0,0,0,0.15),0 0px 2px rgba(0,0,0,0.1)'}} >
-                                
+                            <div style={{ postion:'relative', display:'flex',minHeight:'50px', boxShadow: '0 1px 2px rgba(0,0,0,0.15),0 0px 2px rgba(0,0,0,0.1)'}} className='qlist'>
+                                <div style={{paddingTop:'10px',paddingBottom:'10px'}} className='qitem'>
+                                    {
+                                        (qs.ntype === 'ATOQ')?(
+                                            <>
+                                                <Link style={{fontSize:'15px'}} to={`/questions/${qs.natoq.q_id}?aid=${qs.natoq.a_id}`} className='qitemL'>
+                                                    A new answer was posted for one of your questions. Click here to view the answer.
+                                                </Link>
+                                            </>
+                                        ):
+                                        (qs.ntype === 'USRTOMOD')?(
+                                            <>You are now a moderator. Congrats !!!</>
+                                        ):
+                                        (qs.ntype === 'MODTOUSR')?(
+                                            <>You are no longar a moderator.</>
+                                        ):
+                                        (qs.ntype === 'BOUNTYRECVED')?(
+                                            <>
+                                                <Link style={{fontSize:'15px'}} to={`/questions/${qs.natoq.q_id}?aid=${qs.natoq.a_id}`} className='qitemL'>
+                                                    Your answer received +{qs.natoq.bountyval} reputation point as bounty. Click here to view your answer.
+                                                </Link>
+                                            </>
+                                        ):
+                                        (qs.ntype === 'ANSACCEPTED')?(
+                                            <>
+                                                <Link style={{fontSize:'15px'}} to={`/questions/${qs.natoq.q_id}?aid=${qs.natoq.a_id}`} className='qitemL'>
+                                                    One of your answer was accepted by the questioner. Click here to view your answer.
+                                                </Link>
+                                            </>
+                                        ):
+                                        (qs.ntype === 'QEDTSUGSTED')?(
+                                            <>
+                                                <Link style={{fontSize:'15px'}} onClick={(e) => window.scrollTo({top:0,behavior:"auto"})} to={`/questions/${qs.natoq.q_id}`} className='qitemL'>
+                                                    Someone suggested an edit to one of your question. Click here to view the edit suggestion.
+                                                </Link>
+                                            </>
+                                        ):
+                                        (qs.ntype === 'QEDTSUGACCEPTED')?(
+                                            <>
+                                                <Link style={{fontSize:'15px'}} onClick={(e) => window.scrollTo({top:0,behavior:"auto"})} to={`/questions/${qs.natoq.q_id}`} className='qitemL'>
+                                                    Your edit suggestion to a question was accepted by questioner. Click here to view the edited question.
+                                                </Link>
+                                            </>
+                                        ):
+                                        (qs.ntype === 'DELQ')?(
+                                            <>
+                                                One of your question was deleted by {(qs.nByAdmin)?'Admin':'a Moderator'}.
+                                            </>
+                                        ):
+                                        (qs.ntype === 'DELA')?(
+                                            <>
+                                                <Link style={{fontSize:'15px'}} onClick={(e) => window.scrollTo({top:0,behavior:"auto"})} to={`/questions/${qs.natoq.q_id}`} className='qitemL'>
+                                                    One of your answer to a question was deleted by {(qs.nByAdmin)?'Admin':'a Moderator'}. Click here to view the question.
+                                                </Link>
+                                            </>
+                                        ):
+                                        (<></>)
+                                    }
+                                </div>
                             </div>
                         </>
                     );  
